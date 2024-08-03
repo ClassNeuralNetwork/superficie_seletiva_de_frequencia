@@ -7,6 +7,9 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from tensorflow.keras.optimizers import SGD
 from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.regularizers import l1
+from tensorflow.keras.regularizers import l2
+
 from sklearn.metrics import mean_squared_error, r2_score
 #-----------------------------------------------------
 
@@ -24,10 +27,9 @@ input_test = scaler.transform(input_test)
 
 # Criar e compilar o modelo
 model = tf.keras.models.Sequential()
-model.add(tf.keras.layers.Dense(units=128, input_dim=4, activation='sigmoid'))
-model.add(tf.keras.layers.Dense(units=128, input_dim=4, activation='sigmoid'))
-model.add(tf.keras.layers.Dense(units=256, activation='sigmoid'))
-model.add(tf.keras.layers.Dropout(0.2)) 
+model.add(tf.keras.layers.Dense(units=32, input_dim=4, activation='sigmoid'))
+model.add(tf.keras.layers.Dense(units=128, activation='sigmoid',  kernel_regularizer=l1(l1=0.01)))
+
 model.add(tf.keras.layers.Dense(units=2))
 
 # Resumo do modelo
@@ -42,7 +44,7 @@ model.compile(optimizer=opt, loss='mse', metrics=['mae'])
 early_stopping = EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=True)
 
 # Treinar o modelo com parada precoce
-history = model.fit(input_train, output_train, epochs=300, batch_size=32, validation_split=0.2, callbacks=[early_stopping])
+history = model.fit(input_train, output_train, epochs=200, batch_size=32, validation_split=0.2, callbacks=[early_stopping])
 print(history)
 
 # Plotar a perda durante o treinamento
@@ -64,11 +66,3 @@ print('')
 
 print('MSE - 2st output: ', mean_squared_error(output_test['BW(GHZ)'], y_pred[:, 1]))
 print('R2 - 2st output: ', r2_score(output_test['BW(GHZ)'], y_pred[:, 1]))
-
-# ------------ RESULTADOS ------------ #
-
-# MSE - 1st output:  0.7862020204136747
-# R2 - 2st output:  0.9835229048525664
-
-# MSE - 2st output:  0.14781390388633842
-# R2 - 2st output:  0.953245025459346
