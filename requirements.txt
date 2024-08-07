@@ -2,4 +2,5 @@ numpy
 pandas
 tensorflow
 matplotlib
-scikit-learn    
+scikit-learn 
+shap   

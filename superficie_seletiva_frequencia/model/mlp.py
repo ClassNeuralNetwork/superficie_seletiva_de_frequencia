@@ -9,33 +9,40 @@ from tensorflow.keras.optimizers import SGD
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.regularizers import l1
 from tensorflow.keras.regularizers import l2
-
+import shap
 from sklearn.metrics import mean_squared_error, r2_score
 #-----------------------------------------------------
 
 input_train = pd.read_csv('C:\\Users\\lucas\\Downloads\\superficie_seletiva_de_frequencia\\superficie_seletiva_frequencia\\dataset\\train\\input_train.csv')
 output_train = pd.read_csv('C:\\Users\\lucas\\Downloads\\superficie_seletiva_de_frequencia\\superficie_seletiva_frequencia\\dataset\\train\\output_train.csv')
-
 input_test = pd.read_csv('C:\\Users\\lucas\\Downloads\\superficie_seletiva_de_frequencia\\superficie_seletiva_frequencia\\dataset\\test\\input_test.csv')
 output_test = pd.read_csv('C:\\Users\\lucas\\Downloads\\superficie_seletiva_de_frequencia\\superficie_seletiva_frequencia\\dataset\\test\\output_test.csv')
 
 # Normalizar os dados
 scaler = StandardScaler()
 input_train = scaler.fit_transform(input_train) 
-print(input_train)
 input_test = scaler.transform(input_test)
+
+
+# Salvando os dados normalizados
+pd.DataFrame(input_train).to_csv('input_train_standard.csv', index=False)
+pd.DataFrame(input_test).to_csv('input_test_standard.csv', index=False)
+                               
+
 
 # Criar e compilar o modelo
 model = tf.keras.models.Sequential()
-model.add(tf.keras.layers.Dense(units=32, input_dim=4, activation='sigmoid'))
-model.add(tf.keras.layers.Dense(units=128, activation='sigmoid',  kernel_regularizer=l1(l1=0.01)))
+model.add(tf.keras.layers.Dense(units=128, input_dim=4, activation='relu',  kernel_regularizer=l2(l2=0.01)))
+model.add(tf.keras.layers.Dense(units=64, activation='relu',  kernel_regularizer=l2(l2=0.01)))
+model.add(tf.keras.layers.Dense(units=64, activation='relu',  kernel_regularizer=l2(l2=0.01)))
+model.add(tf.keras.layers.Dense(units=32, activation='relu',  kernel_regularizer=l2(l2=0.01)))
 
 model.add(tf.keras.layers.Dense(units=2))
 
 # Resumo do modelo
 model.summary()
 
-opt = Adam(learning_rate=0.01)
+opt = Adam(learning_rate=0.012)
 # opt = SGD(learning_rate=0.01)
 
 model.compile(optimizer=opt, loss='mse', metrics=['mae'])
@@ -45,24 +52,8 @@ early_stopping = EarlyStopping(monitor='val_loss', patience=20, restore_best_wei
 
 # Treinar o modelo com parada precoce
 history = model.fit(input_train, output_train, epochs=200, batch_size=32, validation_split=0.2, callbacks=[early_stopping])
-print(history)
 
-# Plotar a perda durante o treinamento
-plt.plot(history.history['loss'], label='train')
-plt.plot(history.history['val_loss'], label='validation')
-plt.legend()
-plt.show()
+# salvar o history
+pd.DataFrame(history.history).to_csv('loss.csv', index=False)
 
-# Prever os valores usando input_train
-y_pred = model.predict(input_test)
-print(y_pred)
-
-print('')
-# Calcular as métricas para cada saída do modelo
-print('MSE - 1st output: ', mean_squared_error(output_test['resonant_frequency(GHZ)'], y_pred[:, 0]))
-print('R2 - 2st output: ', r2_score(output_test['resonant_frequency(GHZ)'], y_pred[:, 0]))
-
-print('')
-
-print('MSE - 2st output: ', mean_squared_error(output_test['BW(GHZ)'], y_pred[:, 1]))
-print('R2 - 2st output: ', r2_score(output_test['BW(GHZ)'], y_pred[:, 1]))
+model.save('model.keras')
