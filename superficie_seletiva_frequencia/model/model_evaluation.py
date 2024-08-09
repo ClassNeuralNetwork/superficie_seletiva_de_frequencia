@@ -42,8 +42,19 @@ print(f'MAR - BW: {mae_bw}')
 plt.plot(history['loss'], label='train')
 plt.plot(history['val_loss'], label='validation')
 plt.legend()
-#plt.yscale('log')
+# plt.yscale('log')
 plt.xlabel('Epochs')
 plt.ylabel('Loss')
 plt.title('Training and Validation Loss')
 plt.show()
+
+
+# modelo com dropout
+# MSE - RF:  0.6065658323951434
+# R2 - RF:  0.987287691109852
+
+# MSE - BW:  0.11942886781383846
+# R2 - BW:  0.9622234882697579
+
+# MAE - RF: 0.4683645963668823
+# MAR - BW: 0.2840098457203971

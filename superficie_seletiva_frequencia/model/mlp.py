@@ -35,13 +35,13 @@ model = tf.keras.models.Sequential()
 model.add(tf.keras.layers.Dense(units=32, input_dim=4, activation='sigmoid'))
 model.add(tf.keras.layers.Dense(units=32, activation='sigmoid'))
 model.add(tf.keras.layers.Dense(units=128, activation='sigmoid'))
-
+model.add(tf.keras.layers.Dropout(0.22)) 
 model.add(tf.keras.layers.Dense(units=2))
 
 # Resumo do modelo
 model.summary()
 
-opt = Adam(learning_rate=0.011)
+opt = Adam(learning_rate=0.019)
 # opt = SGD(learning_rate=0.01)
 
 model.compile(optimizer=opt, loss='mse', metrics=['mae'])
