@@ -11,7 +11,7 @@ db.info()
 classes = db[['resonant_frequency(GHZ)','BW(GHZ)']].value_counts()
 print(classes)
 
-input_train, input_test, output_train, output_test = train_test_split(db.iloc[:, 2:4].values, db[['resonant_frequency(GHZ)','BW(GHZ)']].values, test_size=0.2)
+input_train, input_test, output_train, output_test = train_test_split(db.iloc[:, 2:5].values, db[['resonant_frequency(GHZ)','BW(GHZ)']].values, test_size=0.2)
 
 input_train = pd.DataFrame(input_train)
 input_train.to_csv('input_train_csv', index=False)
