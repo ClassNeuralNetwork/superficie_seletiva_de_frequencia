@@ -12,10 +12,18 @@ input_test = pd.read_csv('C:\\Users\\lucas\\Downloads\\superficie_seletiva_de_fr
 output_test = pd.read_csv('C:\\Users\\lucas\\Downloads\\superficie_seletiva_de_frequencia\\superficie_seletiva_frequencia\\dataset\\test\\output_test.csv')
 names = pd.read_csv('C:\\Users\\lucas\\Downloads\\superficie_seletiva_de_frequencia\\superficie_seletiva_frequencia\\dataset\\test\\input_test.csv')
 
-explainer = shap.Explainer(model.predict, input_test)
+explainer = shap.KernelExplainer(model.predict, input_test)
+shap_values = explainer(input_test)
 
-shap_values = (input_test).values
-shap.summary_plot(shap_values, input_test, plot_type="bar", feature_names=names.columns)
-shap.summary_plot(shap_values, input_test, feature_names=names.columns)
+# valor de frequencia de ressonancia
+shap.summary_plot(shap_values[:, :, 0], input_test, plot_type="bar", feature_names=names.columns)
 
-shap.dependence_plot("2", shap_values, input_test)
+#valor de largura de banda
+shap.summary_plot(shap_values[:, :, 1], input_test, plot_type="bar", feature_names=names.columns)
+
+
+# valor de frequencia de ressonancia
+shap.summary_plot(shap_values[:, :, 0], input_test, feature_names=names.columns)
+
+#valor de largura de banda
+shap.summary_plot(shap_values[:, :, 1], input_test, feature_names=names.columns)
