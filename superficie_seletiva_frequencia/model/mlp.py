@@ -35,7 +35,6 @@ model = tf.keras.models.Sequential()
 model.add(tf.keras.layers.Dense(units=32, input_dim=4, activation='sigmoid'))
 model.add(tf.keras.layers.Dense(units=32, activation='sigmoid'))
 model.add(tf.keras.layers.Dense(units=128, activation='sigmoid'))
-
 model.add(tf.keras.layers.Dropout(0.22)) 
 model.add(tf.keras.layers.Dense(units=2))
 
@@ -49,7 +48,7 @@ opt = Adam(learning_rate=0.019)
 model.compile(optimizer=opt, loss='mse', metrics=['mae'])
 
 # Definir a callback de parada precoce
-early_stopping = EarlyStopping(monitor='val_loss', patience=30, restore_best_weights=True)
+early_stopping = EarlyStopping(monitor='val_loss', patience=15, restore_best_weights=True)
 
 # Treinar o modelo com parada precoce
 history = model.fit(input_train, output_train, epochs=250, batch_size=32, validation_split=0.2, callbacks=[early_stopping])

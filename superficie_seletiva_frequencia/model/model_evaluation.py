@@ -39,13 +39,13 @@ print(f'MAE - RF: {mae_rf}')
 print(f'MAR - BW: {mae_bw}')
 
 # Plotar a perda durante o treinamento
-plt.plot(history['loss'], label='train')
-plt.plot(history['val_loss'], label='validation')
+plt.plot(history['loss'], label='treino')
+plt.plot(history['val_loss'], label='validação')
 plt.legend()
-# plt.yscale('log')
-plt.xlabel('Epochs')
-plt.ylabel('Loss')
-plt.title('Training and Validation Loss')
+plt.yscale('log')
+plt.xlabel('Épocas')
+plt.ylabel('Perda')
+plt.title('Função perda')
 plt.show()
 
 
